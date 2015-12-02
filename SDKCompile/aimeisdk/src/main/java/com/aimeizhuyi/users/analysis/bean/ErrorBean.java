@@ -1,5 +1,8 @@
 package com.aimeizhuyi.users.analysis.bean;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by wangyuelin on 15/7/12.
  */
@@ -22,5 +25,17 @@ public class ErrorBean {
 
     public void setClienterrs(String clienterrs) {
         this.clienterrs = clienterrs;
+    }
+
+    public JSONObject getJsonObject(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+
+            jsonObject.put("clientcode", clientcode);
+            jsonObject.put("clienterrs", clienterrs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 }

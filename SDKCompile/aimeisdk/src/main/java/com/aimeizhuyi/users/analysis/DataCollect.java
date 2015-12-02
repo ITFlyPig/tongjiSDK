@@ -18,6 +18,7 @@ import android.util.Log;
 
 import com.aimeizhuyi.users.analysis.bean.BaseBean;
 import com.aimeizhuyi.users.analysis.bean.CommonBean;
+import com.aimeizhuyi.users.analysis.bean.ErrorBean;
 import com.aimeizhuyi.users.analysis.bean.EventBean;
 import com.aimeizhuyi.users.analysis.bean.LogDataBean;
 import com.aimeizhuyi.users.analysis.bean.PageVisitBean;
@@ -549,4 +550,128 @@ public class DataCollect {
         }
     }
 
+    /*
+    * 统计异常信息
+    * */
+    public static void onExecption(final Context context , final String clientcode, final String classPath,final Exception e) {
+        ThreadPool.submit(new Runnable() {
+            @SuppressLint("NewApi")
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    if(wk == null){
+                        wk = new WeakReference<Context>(context);
+                    }
+                    checkSessionIsNull(wk.get());
+                    BaseBean.init(wk.get().getApplicationContext());
+                    try {
+
+                        CommonBean commonBean = new CommonBean();
+                        //部分数据需要app传递，自己获取不到
+                        DeviceInfo deviceInfo = new DeviceInfo(wk.get().getApplicationContext(), true);
+                        // 构造LogDataBean
+                        final LogDataBean logDataBean = new LogDataBean();
+
+                        //构造异常的bean
+                        ErrorBean errorBean = new ErrorBean();
+                        errorBean.setClientcode(clientcode);
+                        String err = parseExecption(classPath ,e);
+                        errorBean.setClienterrs(err);
+
+                        JSONObject uploadJsonObject = new JSONObject();
+                        uploadJsonObject.put("common",
+                                commonBean.getJsonObject());
+                        uploadJsonObject.put("device", deviceInfo.getJsonObject());
+                        uploadJsonObject.put("error", errorBean.getJsonObject());
+                        String jsonStr = uploadJsonObject.toString();
+                        if(Config.isDebug)
+                            Log.d("tt", "onEvent上传的json：" + jsonStr);
+                        logDataBean.setLogContent(jsonStr);
+
+                        categoryInterface.uploadDataCategory(logDataBean,
+                                wk.get().getApplicationContext());
+                    } catch (Exception e) {
+
+                        if(Config.isDebug){
+                            Log.i(Config.SDK_NAME, TAG+" onEvent Execption:"+ e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /*
+   * 统计异常信息
+   * 注意：不建议使用这个函数，因为使用这个函数，查找异常所需要的 方法   行数  异常的类型等这些数据都没有
+   * */
+    public static void onExecption(final Context context , final String clientcode ,final String classPath , final String err) {
+        ThreadPool.submit(new Runnable() {
+            @SuppressLint("NewApi")
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    if(wk == null){
+                        wk = new WeakReference<Context>(context);
+                    }
+                    checkSessionIsNull(wk.get());
+                    BaseBean.init(wk.get().getApplicationContext());
+                    try {
+
+                        CommonBean commonBean = new CommonBean();
+                        //部分数据需要app传递，自己获取不到
+                        DeviceInfo deviceInfo = new DeviceInfo(wk.get().getApplicationContext(), true);
+                        // 构造LogDataBean
+                        final LogDataBean logDataBean = new LogDataBean();
+
+                        //构造异常的bean
+                        ErrorBean errorBean = new ErrorBean();
+                        errorBean.setClientcode(clientcode);
+                        StringBuffer buffer = new StringBuffer();
+                        buffer.append("Execption:").append(err)
+                        .append("/n at ").append(classPath);
+                        errorBean.setClienterrs(buffer.toString());
+
+                        JSONObject uploadJsonObject = new JSONObject();
+                        uploadJsonObject.put("common",
+                                commonBean.getJsonObject());
+                        uploadJsonObject.put("device", deviceInfo.getJsonObject());
+                        uploadJsonObject.put("error", errorBean.getJsonObject());
+                        String jsonStr = uploadJsonObject.toString();
+                        if(Config.isDebug)
+                            Log.d("tt", "onEvent上传的json：" + jsonStr);
+                        logDataBean.setLogContent(jsonStr);
+
+                        categoryInterface.uploadDataCategory(logDataBean,
+                                wk.get().getApplicationContext());
+                    } catch (Exception e) {
+
+                        if(Config.isDebug){
+                            Log.i(Config.SDK_NAME, TAG+" onEvent Execption:"+ e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /*
+    * 解析异常对象
+    * */
+    public static String parseExecption(String localClassName, Throwable e){
+        String errsStr = null;
+        if(e == null ){
+            return errsStr;
+        }
+
+        int stackSize = e.getStackTrace().length;
+        if(stackSize > 0){
+            StringBuffer buffer = new StringBuffer();
+            StackTraceElement element = e.getStackTrace()[0];
+            buffer.append("Execption:").append(e.getClass().getName()).append(":").append(e.getLocalizedMessage())
+            .append("  /n ").append("at ").append(localClassName).append(".").append(element.getMethodName()).append("(").append(element.getFileName()).append(":").append(element.getLineNumber()).append(")");
+            errsStr = buffer.toString();
+        }
+        return errsStr;
+    }
 }
