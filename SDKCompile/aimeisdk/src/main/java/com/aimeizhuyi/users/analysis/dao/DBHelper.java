@@ -18,6 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DBConstant.CREATE_EVENT_TABLE);
         db.execSQL(DBConstant.CREATE_LOG_DATA_TABLE);
+        db.execSQL(DBConstant.CREATE_EXCEPTION_DATA_TABLE);
 
     }
 

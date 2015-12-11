@@ -23,4 +23,9 @@ public class Config {
 
     public static String version = "2.0";//修改统计的Context（使用弱引用或者使用ApplicationContext），避免占用导致不能及时释放
 
+//    public static long PER_TIME = 10 * 60 * 1000; //每隔10分钟收集异常信息
+
+    public static long PER_TIME = 5 * 1000; //每隔10分钟收集异常信息
+
+    public static String uid;
 }

@@ -25,6 +25,7 @@ import com.aimeizhuyi.users.analysis.bean.PageVisitBean;
 import com.aimeizhuyi.users.analysis.bean.ScanBean;
 import com.aimeizhuyi.users.analysis.bean.UploadBean;
 import com.aimeizhuyi.users.analysis.category.CategoryImplByNum;
+import com.aimeizhuyi.users.analysis.category.CategoryImplByTime;
 import com.aimeizhuyi.users.analysis.category.CategoryInterface;
 import com.aimeizhuyi.users.analysis.common.Config;
 import com.aimeizhuyi.users.analysis.common.Constant;
@@ -41,7 +42,7 @@ public class DataCollect {
 
 	public static Object lock = new Object();
 
-	private static CategoryInterface categoryInterface;
+	private static CategoryInterface categoryInterface, categoryByTime;
 
 	private static PageVisitBean pageVisitBean = null;
 
@@ -62,6 +63,7 @@ public class DataCollect {
 
 	static {
 		categoryInterface = new CategoryImplByNum();
+        categoryByTime = new CategoryImplByTime();
 	}
 
 	// 自定义的上传策略可以通过这个传入
@@ -588,7 +590,7 @@ public class DataCollect {
                             Log.d("tt", "onEvent上传的json：" + jsonStr);
                         logDataBean.setLogContent(jsonStr);
 
-                        categoryInterface.uploadDataCategory(logDataBean,
+                        categoryByTime.uploadDataCategory(logDataBean,
                                 wk.get().getApplicationContext());
                     } catch (Exception e) {
 
@@ -629,7 +631,7 @@ public class DataCollect {
                         errorBean.setClientcode(clientcode);
                         StringBuffer buffer = new StringBuffer();
                         buffer.append("Execption:").append(err)
-                        .append("/n at ").append(classPath);
+                                .append("/n at ").append(classPath);
                         errorBean.setClienterrs(buffer.toString());
 
                         JSONObject uploadJsonObject = new JSONObject();
@@ -642,7 +644,7 @@ public class DataCollect {
                             Log.d("tt", "onEvent上传的json：" + jsonStr);
                         logDataBean.setLogContent(jsonStr);
 
-                        categoryInterface.uploadDataCategory(logDataBean,
+                        categoryByTime.uploadDataCategory(logDataBean,
                                 wk.get().getApplicationContext());
                     } catch (Exception e) {
 
@@ -669,9 +671,17 @@ public class DataCollect {
             StringBuffer buffer = new StringBuffer();
             StackTraceElement element = e.getStackTrace()[0];
             buffer.append("Execption:").append(e.getClass().getName()).append(":").append(e.getLocalizedMessage())
-            .append("  /n ").append("at ").append(localClassName).append(".").append(element.getMethodName()).append("(").append(element.getFileName()).append(":").append(element.getLineNumber()).append(")");
+                    .append("  /n ").append("at ").append(localClassName).append(".").append(element.getMethodName()).append("(").append(element.getFileName()).append(":").append(element.getLineNumber()).append(")");
             errsStr = buffer.toString();
         }
         return errsStr;
+    }
+
+    /*
+    *
+    *
+    * 设置一个全局的uid*/
+    public static void setUid(String uid){
+        Config.uid = uid;
     }
 }

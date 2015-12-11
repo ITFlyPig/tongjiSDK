@@ -17,6 +17,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DataCollect.setDebugMode(true);
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -26,11 +27,11 @@ public class MainActivity extends ActionBarActivity {
                     int i = 0;
                     int j = 4 / i;
                 } catch (Exception e) {
-                    DataCollect.onExecption(MainActivity.this, "111111", classPath, e); //主线程
+                    DataCollect.onExecption(MainActivity.this, "111111", e); //主线程
                 }
 
 
-                DataCollect.onExecption(MainActivity.this, "22222", classPath,"异常信息测试");
+                DataCollect.onExecption(MainActivity.this, "22222","异常信息测试");
 
                 new Thread(new Runnable() {
                     @Override
@@ -39,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
                         try {
                             int k = num[6];
                         } catch (Exception e) {
-                            DataCollect.onExecption(MainActivity.this, "3333",classPath +"." + this.getClass().getName(),e); //子线程的类路径
+                            DataCollect.onExecption(MainActivity.this, "3333" +"." + this.getClass().getName(),e); //子线程的类路径
                         }
 
                     }
