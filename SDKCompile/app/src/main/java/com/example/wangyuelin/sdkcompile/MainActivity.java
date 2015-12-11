@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
                         try {
                             int k = num[6];
                         } catch (Exception e) {
-                            DataCollect.onExecption(MainActivity.this, "3333" +"." + this.getClass().getName(),e); //子线程的类路径
+                            DataCollect.onExecption(MainActivity.this, "3333" ,e); //子线程的类路径
                         }
 
                     }

@@ -4,7 +4,7 @@ package com.aimeizhuyi.users.analysis.dao;
  * Created by wangyuelin on 15/7/9.
  */
 public class DBConstant {
-    public static int VERSION = 1;
+    public static int VERSION = 2;
 
     public  static final String DATABASE_NAME = "collect.db";
 

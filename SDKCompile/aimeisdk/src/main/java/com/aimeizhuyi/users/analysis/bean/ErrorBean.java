@@ -10,6 +10,7 @@ public class ErrorBean {
 
     private String clientcode;
     private String clienterrs;
+    private String uid;
 
     public String getClientcode() {
         return clientcode;
@@ -27,12 +28,21 @@ public class ErrorBean {
         this.clienterrs = clienterrs;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public JSONObject getJsonObject(){
         JSONObject jsonObject = new JSONObject();
         try {
 
             jsonObject.put("clientcode", clientcode);
             jsonObject.put("clienterrs", clienterrs);
+            jsonObject.put("uid", uid);
         } catch (JSONException e) {
             e.printStackTrace();
         }

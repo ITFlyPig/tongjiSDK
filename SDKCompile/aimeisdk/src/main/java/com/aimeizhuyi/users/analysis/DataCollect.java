@@ -99,6 +99,7 @@ public class DataCollect {
                     checkSessionIsNull(wk.get());
                     BaseBean.init(wk.get().getApplicationContext());
                     try {
+                        event_paralist.put("uid", Config.uid);
                         EventBean eventBean = new EventBean();
                         eventBean.setEventName(event_lable);
                         eventBean.setEventId(event_id);
@@ -245,10 +246,10 @@ public class DataCollect {
 
                     if(Config.isDebug)
                         Log.i("tt", "onResume");
-
-                    checkUpdateSession(context);//检查是否更新Session
                     if(context == null)
                         return;
+                    checkUpdateSession(context.getClass().getName());//检查是否更新Session
+
                     wk = new WeakReference<Context>(context);
                     init(wk.get().getApplicationContext());
                     BaseBean.init(wk.get().getApplicationContext());
@@ -418,6 +419,7 @@ public class DataCollect {
                         }
                         eventBean.setSf(sf);
                         eventBean.setStayTime((scanBean.endTime - scanBean.visitTime) + "");
+                        params.put("uid", Config.uid);
                         eventBean.setEventIfo(params);
                         CommonBean commonBean = new CommonBean();
                         if(TextUtils.isEmpty(logType)){
@@ -511,19 +513,19 @@ public class DataCollect {
     *
     * 按一定的策略检测是否更新sessionid
     * */
-    private static void checkUpdateSession(Context context){
+    private static void checkUpdateSession(String className){
         Context mContext = null;
         if(wk != null){
          mContext = wk.get();
         }
-        if(context == null || mContext == null)
+        if(TextUtils.isEmpty(className) || mContext == null)
             return;
-        if(context.getClass().getName().equals(mContext.getClass().getName())){//表示是同一个页面
+        if(className.equals(mContext.getClass().getName())){//表示是同一个页面
             if((System.currentTimeMillis() - pauseTime) > Session.time){//间隔大于一分钟
 
                 if(Config.isDebug)
                 Log.i("ss", "更新：");
-                Session.session = Session.generateSeesion(context);
+                Session.session = Session.generateSeesion(wk.get());
             }
         }
     }
@@ -555,7 +557,7 @@ public class DataCollect {
     /*
     * 统计异常信息
     * */
-    public static void onExecption(final Context context , final String clientcode, final String classPath,final Exception e) {
+    public static void onExecption(final Context context , final String clientcode, final Exception e) {
         ThreadPool.submit(new Runnable() {
             @SuppressLint("NewApi")
             @Override
@@ -577,8 +579,9 @@ public class DataCollect {
                         //构造异常的bean
                         ErrorBean errorBean = new ErrorBean();
                         errorBean.setClientcode(clientcode);
-                        String err = parseExecption(classPath ,e);
+                        String err = parseExecption(e);
                         errorBean.setClienterrs(err);
+                        errorBean.setUid(Config.uid);
 
                         JSONObject uploadJsonObject = new JSONObject();
                         uploadJsonObject.put("common",
@@ -607,7 +610,7 @@ public class DataCollect {
    * 统计异常信息
    * 注意：不建议使用这个函数，因为使用这个函数，查找异常所需要的 方法   行数  异常的类型等这些数据都没有
    * */
-    public static void onExecption(final Context context , final String clientcode ,final String classPath , final String err) {
+    public static void onExecption(final Context context , final String clientcode , final String err) {
         ThreadPool.submit(new Runnable() {
             @SuppressLint("NewApi")
             @Override
@@ -630,8 +633,7 @@ public class DataCollect {
                         ErrorBean errorBean = new ErrorBean();
                         errorBean.setClientcode(clientcode);
                         StringBuffer buffer = new StringBuffer();
-                        buffer.append("Execption:").append(err)
-                                .append("/n at ").append(classPath);
+                        buffer.append("Execption:").append(err);
                         errorBean.setClienterrs(buffer.toString());
 
                         JSONObject uploadJsonObject = new JSONObject();
@@ -660,7 +662,7 @@ public class DataCollect {
     /*
     * 解析异常对象
     * */
-    public static String parseExecption(String localClassName, Throwable e){
+    public static String parseExecption( Throwable e){
         String errsStr = null;
         if(e == null ){
             return errsStr;
@@ -671,7 +673,7 @@ public class DataCollect {
             StringBuffer buffer = new StringBuffer();
             StackTraceElement element = e.getStackTrace()[0];
             buffer.append("Execption:").append(e.getClass().getName()).append(":").append(e.getLocalizedMessage())
-                    .append("  /n ").append("at ").append(localClassName).append(".").append(element.getMethodName()).append("(").append(element.getFileName()).append(":").append(element.getLineNumber()).append(")");
+                    .append("  /n ").append("at ").append(element.getMethodName()).append("(").append(element.getFileName()).append(":").append(element.getLineNumber()).append(")");
             errsStr = buffer.toString();
         }
         return errsStr;
