@@ -99,7 +99,9 @@ public class DataCollect {
                     checkSessionIsNull(wk.get());
                     BaseBean.init(wk.get().getApplicationContext());
                     try {
-                        event_paralist.put("uid", Config.uid);
+                        if(!TextUtils.isEmpty(Config.uid)){
+                            event_paralist.put("uid", Config.uid);
+                        }
                         EventBean eventBean = new EventBean();
                         eventBean.setEventName(event_lable);
                         eventBean.setEventId(event_id);
@@ -419,7 +421,9 @@ public class DataCollect {
                         }
                         eventBean.setSf(sf);
                         eventBean.setStayTime((scanBean.endTime - scanBean.visitTime) + "");
-                        params.put("uid", Config.uid);
+                        if(!TextUtils.isEmpty(Config.uid)){
+                            params.put("uid", Config.uid);
+                        }
                         eventBean.setEventIfo(params);
                         CommonBean commonBean = new CommonBean();
                         if(TextUtils.isEmpty(logType)){
@@ -581,7 +585,9 @@ public class DataCollect {
                         errorBean.setClientcode(clientcode);
                         String err = parseExecption(e);
                         errorBean.setClienterrs(err);
-                        errorBean.setUid(Config.uid);
+                        if(!TextUtils.isEmpty(Config.uid)){
+                            errorBean.setUid(Config.uid);
+                        }
 
                         JSONObject uploadJsonObject = new JSONObject();
                         uploadJsonObject.put("common",
