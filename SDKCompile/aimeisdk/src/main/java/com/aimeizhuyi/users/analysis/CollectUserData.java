@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 
+import com.mogujie.utils.MGVegetaGlass;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -13,10 +15,6 @@ import java.util.Map;
  * Created by wangyuelin on 15/7/14.
  */
 public class CollectUserData {
-
-    static {
-        DataCollect.setDebugMode(BuildConfig.DEBUG);//测试模式，打印出需要的信息
-    }
 
     /*
     * 事件的打点
@@ -38,6 +36,14 @@ public class CollectUserData {
                 e.printStackTrace();
             }
         }
+
+        Map<String, Object> event_map = new HashMap<>();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (entry != null){
+                event_map.put(entry.getKey(),entry.getValue());
+            }
+        }
+        MGVegetaGlass.instance().event(eventId, event_map);
         DataCollect.onEvent(context, eventId, eventName, map, 8);
 
     }
@@ -77,6 +83,10 @@ public class CollectUserData {
     * */
     public static void setUid(String uid){
         DataCollect.setUid(uid);
+    }
+
+    public static void setDebugMode(boolean debug){
+        DataCollect.setDebugMode(debug);//测试模式，打印出需要的信息
     }
 
 }

@@ -15,5 +15,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url 'http://maven.mogujie.org/nexus/content/groups/mitpublic/' }
+        maven { url 'http://maven.mogujie.org/nexus/content/repositories/ThousandSunny' }
     }
 }
