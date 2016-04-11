@@ -73,9 +73,9 @@ public class DataCollect {
 
 	/**
 	 * 事件统计
-	 * @param context
-	 * @param event_id
-	 * @param event_lable
+	 * @param context   上下文
+	 * @param event_id  事件id
+	 * @param event_lable 事件的名称
 	 */
 	public static void onEvent(Context context, String event_id,
 			String event_lable,int event_type) {
@@ -169,9 +169,9 @@ public class DataCollect {
 
 	/**
 	 * 页面访问的统计
-	 * @param context
-	 * @param source
-	 * @param target
+	 * @param context 上下文
+	 * @param source  源
+	 * @param target  目标
 	 */
 	public static void collectPageVisit(Context context, String source, String target) {
         collectPageVisit(context, source, target, Constant.PAGE_VISIT_ID,

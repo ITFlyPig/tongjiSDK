@@ -18,9 +18,8 @@ public class GZip {
 	private static final String charset = "UTF-8";
 	/**
 	 * gzip压缩字符，压缩失败则返回原字符
-	 * @param
-	 * @param str
-	 * @return
+	 * @param str 要压缩的字符串
+	 * @return 返回字符串
 	 */
 	public static String compress( String str) {
 		if (str == null || str.length() == 0)
@@ -40,9 +39,8 @@ public class GZip {
 	}
 	/**
 	 * 加压压缩过的字符
-	 * @param
-	 * @param str
-	 * @return
+	 * @param str 要压缩的字符串
+	 * @return 压缩过的字符串
 	 */
 	public static String uncompress( String str) {
 		if (str == null || str.length() == 0)
@@ -68,9 +66,8 @@ public class GZip {
 	
 	/**
 	 * 使用gzip压缩字符，返回压缩后的字节数组
-	 * @param
-	 * @param str
-	 * @return
+	 * @param str 要压缩的字符串
+	 * @return  压缩后的字节数组
 	 */
 	public static byte[] compress_(String str) {
 		if (str == null || str.length() == 0)
@@ -90,9 +87,9 @@ public class GZip {
 	
 	/**
 	 * 将压缩过的字符解压后返回其字节数组
-	 * @param context
-	 * @param str
-	 * @return
+	 * @param context 上下文
+	 * @param str  要解压的字符串
+	 * @return  解压后的字节数组
 	 */
 	public static byte[] uncompress_(Context context, String str) {
 		if (str == null || str.length() == 0)
